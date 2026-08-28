@@ -1,0 +1,243 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #eef6ff;
+  color: #123a5f;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #bfe3ff 0%, #0a2d5b 100%);
+  padding: 35px 20px;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(10, 45, 91, 0.2);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.page-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+}
+
+.dashboard-header {
+  background: #ffffff;
+  padding: 24px 28px;
+  border-radius: 18px;
+  margin-bottom: 28px;
+  box-shadow: 0 8px 20px rgba(12, 49, 82, 0.08);
+  border-left: 5px solid #63b3ff;
+}
+
+.dashboard-header h2 {
+  margin: 0 0 8px;
+  color: #0a2d5b;
+  font-size: 1.8rem;
+}
+
+.dashboard-header p {
+  margin: 0;
+  color: #5a7a95;
+  font-size: 1rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.dashboard-card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(12, 49, 82, 0.08);
+  border-top: 4px solid #63b3ff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(12, 49, 82, 0.12);
+}
+
+.dashboard-card h3 {
+  margin: 0 0 16px;
+  color: #0a2d5b;
+  font-size: 1.4rem;
+}
+
+.issues-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.issue-item {
+  background: #f5faff;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border-left: 4px solid #ff6b6b;
+  color: #1d416e;
+}
+
+.issue-item.warning {
+  border-left-color: #ffa500;
+}
+
+.issue-item.success {
+  border-left-color: #52c41a;
+}
+
+.issue-item.info {
+  border-left-color: #1890ff;
+}
+
+.issue-item strong {
+  color: #0a2d5b;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.no-data {
+  color: #8fa3b8;
+  font-style: italic;
+  text-align: center;
+  padding: 16px;
+}
+
+.report-section {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+  margin-bottom: 28px;
+  box-shadow: 0 12px 28px rgba(12, 49, 82, 0.08);
+}
+
+.report-section h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #0a2d5b;
+  font-size: 1.5rem;
+}
+
+.repair-form {
+  max-width: 100%;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 18px 22px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+  color: #1d416e;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #cfe0f4;
+  background: #f9fbff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #123a5f;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.submit-btn,
+.action-btn {
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 12px 24px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #63b3ff, #0b3d8b);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(11, 61, 139, 0.22);
+}
+
+.submit-btn:hover,
+.submit-btn:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(11, 61, 139, 0.28);
+}
+
+.summary-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  background: linear-gradient(135deg, #63b3ff, #0b3d8b);
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(11, 61, 139, 0.18);
+}
+
+.action-btn.secondary {
+  background: #dfeeff;
+  color: #0a2d5b;
+  box-shadow: 0 4px 12px rgba(12, 49, 82, 0.08);
+}
+
+.action-btn:hover,
+.action-btn:focus {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 760px) {
+  .form-grid,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-card {
+    padding: 18px;
+  }
+
+  .report-section {
+    padding: 18px;
+  }
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authority Operations Dashboard</title>
+    <link rel="stylesheet" href="authority-use.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body data-page="authority-use">
+    <header class="page-header">
+      <h1>Authority Operations Dashboard</h1>
+    </header>
+
+    <main class="page-wrapper">
+      <section class="dashboard-header">
+        <h2 id="companyNameDisplay"></h2>
+        <p id="mineNameDisplay"></p>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="dashboard-card">
+          <h3>Equipment Issues</h3>
+          <div id="equipmentIssuesContainer" class="issues-list">
+            <p class="no-data">No equipment issues reported</p>
+          </div>
+        </section>
+
+        <section class="dashboard-card">
+          <h3>Maintenance Problems</h3>
+          <div id="maintenanceProblemsContainer" class="issues-list">
+            <p class="no-data">No maintenance problems reported</p>
+          </div>
+        </section>
+
+        <section class="dashboard-card">
+          <h3>Field Repairs</h3>
+          <div id="fieldRepairsContainer" class="issues-list">
+            <p class="no-data">No field repairs recorded</p>
+          </div>
+        </section>
+
+        <section class="dashboard-card">
+          <h3>Repair Works</h3>
+          <div id="repairWorksContainer" class="issues-list">
+            <p class="no-data">No repair works scheduled</p>
+          </div>
+        </section>
+      </div>
+
+      <section class="report-section">
+        <h3>Add Field Repair or Repair Work</h3>
+        <form id="repair-form" class="repair-form">
+          <div class="form-grid">
+            <label>
+              Equipment name
+              <input type="text" name="equipmentName" placeholder="Enter equipment name" required />
+            </label>
+
+            <label>
+              Repair type
+              <select name="repairType" required>
+                <option value="">Select repair type</option>
+                <option value="Field Repair">Field Repair</option>
+                <option value="Repair Work">Repair Work</option>
+              </select>
+            </label>
+
+            <label class="full-width">
+              Description
+              <textarea name="description" rows="3" placeholder="Describe the repair needed" required></textarea>
+            </label>
+
+            <label>
+              Priority level
+              <select name="priority" required>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Urgent">Urgent</option>
+              </select>
+            </label>
+
+            <label>
+              Assigned to supervisor
+              <select name="assignedSupervisor" required>
+                <option value="">Select supervisor</option>
+                <div id="supervisorOptions"></div>
+              </select>
+            </label>
+
+            <label>
+              Expected completion date
+              <input type="date" name="completionDate" required />
+            </label>
+          </div>
+
+          <button type="submit" class="submit-btn">Add Repair Task</button>
+        </form>
+      </section>
+
+      <section class="summary-actions">
+        <button type="button" class="action-btn" id="exportDataBtn">Export Report</button>
+        <button type="button" class="action-btn secondary" id="backBtn">Back to Profile</button>
+      </section>
+    </main>
+  </body>
+</html>

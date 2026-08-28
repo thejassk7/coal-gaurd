@@ -202,10 +202,17 @@ document.addEventListener('DOMContentLoaded', () => {
     summaryCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     window.appData = formData;
+    localStorage.setItem('authorityData', JSON.stringify(formData));
+
+    setTimeout(() => {
+      window.location.href = 'authority-use.html';
+    }, 2000);
   });
 
   if (document.body.dataset.page !== 'supervisor') {
-    return;
+    if (document.body.dataset.page !== 'authority-use') {
+      return;
+    }
   }
 
   const mineCountInput = document.getElementById('mineCount');
@@ -403,5 +410,172 @@ document.addEventListener('DOMContentLoaded', () => {
     supervisorSummaryCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     window.supervisorData = supervisorData;
+  });
+
+  if (document.body.dataset.page !== 'authority-use') {
+    return;
+  }
+
+  const authorityData = JSON.parse(localStorage.getItem('authorityData') || '{}');
+  const repairTasks = JSON.parse(localStorage.getItem('repairTasks') || '[]');
+
+  document.getElementById('companyNameDisplay').textContent = `Company: ${authorityData.company?.companyName || 'N/A'}`;
+  document.getElementById('mineNameDisplay').textContent = `Mine: ${authorityData.company?.mineName || 'N/A'} | Address: ${authorityData.company?.miningAddress || 'N/A'}`;
+
+  const equipmentWithIssues = authorityData.equipment?.filter((eq) => {
+    return eq.licenseIssue === 'Yes' || eq.repairStatus === 'Requires Attention';
+  }) || [];
+
+  const maintenanceDelays = authorityData.equipment?.filter((eq) => {
+    const maintDate = new Date(eq.latestMaintenance);
+    const currentDate = new Date();
+    const diffDays = (currentDate - maintDate) / (1000 * 60 * 60 * 24);
+    return diffDays > 180 || eq.repairStatus === 'Delayed';
+  }) || [];
+
+  const populateIssues = (containerId, issues, type) => {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    if (issues.length === 0) {
+      container.innerHTML = '<p class="no-data">No issues reported</p>';
+      return;
+    }
+
+    issues.forEach((issue) => {
+      const issueEl = document.createElement('div');
+      issueEl.className = `issue-item warning`;
+      issueEl.innerHTML = `<strong>${issue.name || 'Equipment'}</strong><small>${issue.repairStatus || issue.licenseIssue || 'Issue'}</small>`;
+      container.appendChild(issueEl);
+    });
+  };
+
+  populateIssues('equipmentIssuesContainer', equipmentWithIssues, 'equipment');
+  populateIssues('maintenanceProblemsContainer', maintenanceDelays, 'maintenance');
+
+  const repairForm = document.getElementById('repair-form');
+  const supervisorSelect = repairForm?.elements.assignedSupervisor;
+
+  if (supervisorSelect) {
+    authorityData.supervisors?.forEach((supervisor) => {
+      const option = document.createElement('option');
+      option.value = supervisor.name;
+      option.textContent = supervisor.name;
+      supervisorSelect.appendChild(option);
+    });
+  }
+
+  repairForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const repairData = {
+      equipment: repairForm.elements.equipmentName.value.trim(),
+      type: repairForm.elements.repairType.value,
+      description: repairForm.elements.description.value.trim(),
+      priority: repairForm.elements.priority.value,
+      assignedSupervisor: repairForm.elements.assignedSupervisor.value,
+      completionDate: repairForm.elements.completionDate.value,
+      dateAdded: new Date().toISOString(),
+    };
+
+    repairTasks.push(repairData);
+    localStorage.setItem('repairTasks', JSON.stringify(repairTasks));
+
+    if (repairData.type === 'Field Repair') {
+      const fieldRepairsContainer = document.getElementById('fieldRepairsContainer');
+      const noDataMsg = fieldRepairsContainer.querySelector('.no-data');
+      if (noDataMsg) {
+        noDataMsg.remove();
+      }
+
+      const repairEl = document.createElement('div');
+      repairEl.className = 'issue-item info';
+      repairEl.innerHTML = `
+        <strong>${repairData.equipment}</strong>
+        <small>${repairData.description}</small>
+        <p>Priority: ${repairData.priority} | Assigned to: ${repairData.assignedSupervisor}</p>
+      `;
+      fieldRepairsContainer.appendChild(repairEl);
+    } else {
+      const repairWorksContainer = document.getElementById('repairWorksContainer');
+      const noDataMsg = repairWorksContainer.querySelector('.no-data');
+      if (noDataMsg) {
+        noDataMsg.remove();
+      }
+
+      const repairEl = document.createElement('div');
+      repairEl.className = 'issue-item success';
+      repairEl.innerHTML = `
+        <strong>${repairData.equipment}</strong>
+        <small>${repairData.description}</small>
+        <p>Priority: ${repairData.priority} | Due: ${repairData.completionDate}</p>
+      `;
+      repairWorksContainer.appendChild(repairEl);
+    }
+
+    repairForm.reset();
+  });
+
+  const populateRepairTasks = () => {
+    const fieldRepairsContainer = document.getElementById('fieldRepairsContainer');
+    const repairWorksContainer = document.getElementById('repairWorksContainer');
+
+    const fieldRepairs = repairTasks.filter((task) => task.type === 'Field Repair');
+    const repairWorks = repairTasks.filter((task) => task.type === 'Repair Work');
+
+    if (fieldRepairs.length > 0) {
+      fieldRepairsContainer.innerHTML = '';
+      fieldRepairs.forEach((repair) => {
+        const el = document.createElement('div');
+        el.className = 'issue-item info';
+        el.innerHTML = `
+          <strong>${repair.equipment}</strong>
+          <small>${repair.description}</small>
+          <p>Priority: ${repair.priority} | Assigned to: ${repair.assignedSupervisor}</p>
+        `;
+        fieldRepairsContainer.appendChild(el);
+      });
+    }
+
+    if (repairWorks.length > 0) {
+      repairWorksContainer.innerHTML = '';
+      repairWorks.forEach((repair) => {
+        const el = document.createElement('div');
+        el.className = 'issue-item success';
+        el.innerHTML = `
+          <strong>${repair.equipment}</strong>
+          <small>${repair.description}</small>
+          <p>Priority: ${repair.priority} | Due: ${repair.completionDate}</p>
+        `;
+        repairWorksContainer.appendChild(el);
+      });
+    }
+  };
+
+  populateRepairTasks();
+
+  const exportDataBtn = document.getElementById('exportDataBtn');
+  exportDataBtn?.addEventListener('click', () => {
+    const reportData = {
+      company: authorityData.company,
+      supervisors: authorityData.supervisors,
+      equipmentWithIssues,
+      maintenanceDelays,
+      repairTasks,
+    };
+
+    const report = JSON.stringify(reportData, null, 2);
+    const blob = new Blob([report], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'authority-report.json';
+    link.click();
+    URL.revokeObjectURL(url);
+  });
+
+  const backBtn = document.getElementById('backBtn');
+  backBtn?.addEventListener('click', () => {
+    window.location.href = 'profile.html';
   });
 });
