@@ -99,6 +99,21 @@ document.addEventListener('DOMContentLoaded', () => {
             <option value="Requires Attention">Requires Attention</option>
           </select>
         </label>
+
+        <label class="full-width">
+          Machinery License Image
+          <input type="file" name="machineryLicenseImage" accept="image/*" />
+        </label>
+
+        <label>
+          License expiry date
+          <input type="date" name="licenseExpiryDate" />
+        </label>
+
+        <label>
+          Last field visit date
+          <input type="date" name="lastFieldVisitDate" />
+        </label>
       </div>
     `;
     return wrapper;
@@ -137,8 +152,34 @@ document.addEventListener('DOMContentLoaded', () => {
     return differenceInDays > 180;
   };
 
-  authorityForm.addEventListener('submit', (event) => {
+  authorityForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    const equipmentEntries = Array.from(document.querySelectorAll('.equipment-entry'));
+    const equipmentPromises = equipmentEntries.map(async (entry) => {
+      const licenseFile = entry.querySelector('input[name="machineryLicenseImage"]')?.files[0];
+      let licenseImage = null;
+
+      if (licenseFile) {
+        licenseImage = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(licenseFile);
+        });
+      }
+
+      return {
+        name: entry.querySelector('input[name="machineryName"]')?.value.trim() || '',
+        licenseIssue: entry.querySelector('select[name="licenseIssue"]')?.value || 'No',
+        latestMaintenance: entry.querySelector('input[name="maintenanceDate"]')?.value || '',
+        repairStatus: entry.querySelector('select[name="repairStatus"]')?.value || 'Good',
+        licenseImage,
+        licenseExpiryDate: entry.querySelector('input[name="licenseExpiryDate"]')?.value || '',
+        lastFieldVisitDate: entry.querySelector('input[name="lastFieldVisitDate"]')?.value || '',
+      };
+    });
+
+    const equipment = await Promise.all(equipmentPromises);
 
     const formData = {
       company: {
@@ -157,12 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         supervisedMines: entry.querySelector(`input[name="supervisorMines${index + 1}"]`)?.value.trim() || '',
         timeSlot: entry.querySelector(`select[name="supervisorSlot${index + 1}"]`)?.value || 'Morning',
       })),
-      equipment: Array.from(document.querySelectorAll('.equipment-entry')).map((entry) => ({
-        name: entry.querySelector('input[name="machineryName"]')?.value.trim() || '',
-        licenseIssue: entry.querySelector('select[name="licenseIssue"]')?.value || 'No',
-        latestMaintenance: entry.querySelector('input[name="maintenanceDate"]')?.value || '',
-        repairStatus: entry.querySelector('select[name="repairStatus"]')?.value || 'Good',
-      })),
+      equipment,
       mineIssues: {
         total: 0,
         reportedBy: 'None',
@@ -463,6 +499,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
   populateIssues('equipmentIssuesContainer', equipmentWithIssues, 'equipment');
   populateIssues('maintenanceProblemsContainer', maintenanceDelays, 'maintenance');
+
+  const populateMachineryLicenseStatus = () => {
+    const container = document.getElementById('machineryLicenseContainer');
+    container.innerHTML = '';
+
+    if (!authorityData.equipment || authorityData.equipment.length === 0) {
+      container.innerHTML = '<p class="no-data">No machinery records</p>';
+      return;
+    }
+
+    let criticalFlags = [];
+
+    authorityData.equipment.forEach((equipment, index) => {
+      const card = document.createElement('div');
+      card.className = 'machinery-card';
+
+      const today = new Date();
+      const issues = [];
+
+      if (equipment.licenseExpiryDate) {
+        const expiryDate = new Date(equipment.licenseExpiryDate);
+        const daysUntilExpiry = (expiryDate - today) / (1000 * 60 * 60 * 24);
+
+        if (daysUntilExpiry < 0) {
+          issues.push({ type: 'critical', message: 'License EXPIRED' });
+          criticalFlags.push(`${equipment.name}: License expired`);
+        } else if (daysUntilExpiry < 30) {
+          issues.push({ type: 'warning', message: `License expires in ${Math.round(daysUntilExpiry)} days` });
+        }
+      }
+
+      if (equipment.lastFieldVisitDate) {
+        const visitDate = new Date(equipment.lastFieldVisitDate);
+        const daysSinceVisit = (today - visitDate) / (1000 * 60 * 60 * 24);
+
+        if (daysSinceVisit > 90) {
+          issues.push({ type: 'critical', message: `Field visit overdue (${Math.round(daysSinceVisit)} days ago)` });
+          criticalFlags.push(`${equipment.name}: Field visit overdue`);
+        } else if (daysSinceVisit > 60) {
+          issues.push({ type: 'warning', message: `Field visit: ${Math.round(daysSinceVisit)} days ago` });
+        }
+      } else {
+        issues.push({ type: 'warning', message: 'No field visit date recorded' });
+      }
+
+      const hasCritical = issues.some((i) => i.type === 'critical');
+
+      card.innerHTML = `
+        <h4>${equipment.name}</h4>
+        <div class="machinery-status">
+          ${issues.map((issue) => `<div class="status-item ${issue.type}">${issue.type === 'critical' ? '🚨 ' : '⚠️ '}${issue.message}</div>`).join('')}
+          ${issues.length === 0 ? '<div class="status-item ok">✓ All checks passed</div>' : ''}
+        </div>
+        ${equipment.licenseImage ? `<img src="${equipment.licenseImage}" alt="License" class="machinery-license-image">` : ''}
+      `;
+
+      container.appendChild(card);
+    });
+
+    if (criticalFlags.length > 0) {
+      const flags = criticalFlags.join('\n');
+      alert(`🚨 CRITICAL COMPLIANCE ISSUES DETECTED:\n\n${flags}\n\nImmediate action required!`);
+    }
+  };
+
+  populateMachineryLicenseStatus();
 
   const repairForm = document.getElementById('repair-form');
   const supervisorSelect = repairForm?.elements.assignedSupervisor;
