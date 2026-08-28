@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supervisor Dashboard</title>
+    <link rel="stylesheet" href="supervisor.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body data-page="supervisor">
+    <header class="page-header">
+      <h1>Supervisor Dashboard</h1>
+    </header>
+
+    <main class="page-wrapper">
+      <form id="supervisor-form" class="supervisor-form">
+        <section class="form-section">
+          <h2>Personal Information</h2>
+          <div class="form-grid">
+            <label>
+              Name
+              <input type="text" name="supervisorName" placeholder="Your name" required />
+            </label>
+
+            <label>
+              Email
+              <input type="email" name="supervisorEmail" placeholder="Your email" required />
+            </label>
+
+            <label>
+              Contact number
+              <input type="tel" name="supervisorPhone" placeholder="Your phone number" />
+            </label>
+
+            <label class="full-width">
+              Address
+              <textarea name="supervisorAddress" rows="3" placeholder="Your address" required></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Assigned Mines</h2>
+          <label class="count-label">
+            Number of mines assigned
+            <input id="mineCount" type="number" min="1" value="1" />
+          </label>
+          <div id="mineForms" class="mine-forms"></div>
+        </section>
+
+        <section class="form-section">
+          <h2>Issues in Mines</h2>
+          <div id="issuesForms" class="issues-forms"></div>
+          <button type="button" id="addIssueBtn" class="secondary-btn">Add Issue</button>
+        </section>
+
+        <section class="form-section">
+          <h2>Equipment Status Report</h2>
+          <div id="equipmentStatusForms" class="equipment-status-forms"></div>
+          <button type="button" id="addEquipmentStatusBtn" class="secondary-btn">Add Equipment Report</button>
+        </section>
+
+        <button type="submit" class="submit-btn">Submit Report</button>
+      </form>
+
+      <section id="reportSummary" class="summary-card hidden">
+        <h2>Supervisor Report Summary</h2>
+        <div id="summaryContent"></div>
+      </section>
+    </main>
+  </body>
+</html>

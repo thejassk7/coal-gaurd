@@ -1,0 +1,205 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #eef6ff;
+  color: #123a5f;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #bfe3ff 0%, #0a2d5b 100%);
+  padding: 35px 20px;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(10, 45, 91, 0.2);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.page-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+}
+
+.supervisor-form,
+.summary-card {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(12, 49, 82, 0.08);
+}
+
+.form-section {
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #dfeaf8;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+}
+
+.form-section h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #0a2d5b;
+  font-size: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 18px 22px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+  color: #1d416e;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #cfe0f4;
+  background: #f9fbff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #123a5f;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.count-label {
+  max-width: 240px;
+  margin-bottom: 16px;
+}
+
+.mine-forms,
+.issues-forms,
+.equipment-status-forms {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mine-entry,
+.issue-entry,
+.equipment-status-entry {
+  border: 1px solid #dfeaf8;
+  border-radius: 14px;
+  background: #f5faff;
+  padding: 18px;
+}
+
+.mine-entry h3,
+.issue-entry h3,
+.equipment-status-entry h3 {
+  margin: 0 0 14px;
+  color: #0a2d5b;
+}
+
+.mine-row,
+.issue-row,
+.equipment-status-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.secondary-btn,
+.submit-btn {
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.secondary-btn {
+  margin-top: 12px;
+  background: #dfeeff;
+  color: #0a2d5b;
+  padding: 10px 16px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #63b3ff, #0b3d8b);
+  color: #ffffff;
+  padding: 15px 20px;
+  box-shadow: 0 10px 22px rgba(11, 61, 139, 0.22);
+}
+
+.secondary-btn:hover,
+.submit-btn:hover,
+.secondary-btn:focus,
+.submit-btn:focus {
+  transform: translateY(-2px);
+}
+
+.summary-card {
+  margin-top: 24px;
+  display: none;
+}
+
+.summary-card.visible {
+  display: block;
+}
+
+.summary-card h2 {
+  margin-top: 0;
+  color: #0a2d5b;
+}
+
+.summary-list {
+  padding-left: 20px;
+  margin: 12px 0 0;
+}
+
+.summary-list li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .form-grid,
+  .mine-row,
+  .issue-row,
+  .equipment-status-row {
+    grid-template-columns: 1fr;
+  }
+
+  .supervisor-form,
+  .summary-card {
+    padding: 18px;
+  }
+}

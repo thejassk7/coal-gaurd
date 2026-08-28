@@ -1,0 +1,78 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #eef6ff;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #bfe3ff 0%, #0a2d5b 100%);
+  padding: 35px 20px;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(10, 45, 91, 0.2);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 40px;
+  padding: 50px 20px;
+  flex-wrap: wrap;
+}
+
+.profile-card {
+  width: 300px;
+  min-height: 220px;
+  background: #ffffff;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 25px 20px;
+  box-shadow: 0 12px 24px rgba(15, 58, 98, 0.12);
+  border: 1px solid #dfeeff;
+}
+
+.profile-card h2 {
+  margin: 0 0 25px;
+  color: #0a2d5b;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+}
+
+.signup-btn {
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #63b3ff, #0b3d8b);
+  color: #ffffff;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 18px rgba(11, 61, 139, 0.22);
+}
+
+.signup-btn:hover,
+.signup-btn:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(11, 61, 139, 0.28);
+}
+
+.signup-btn:focus {
+  outline: 3px solid rgba(99, 179, 255, 0.45);
+  outline-offset: 2px;
+}

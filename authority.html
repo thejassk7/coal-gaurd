@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authority Dashboard</title>
+    <link rel="stylesheet" href="authority.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body data-page="authority">
+    <header class="page-header">
+      <h1>Authority Registration</h1>
+    </header>
+
+    <main class="page-wrapper">
+      <form id="authority-form" class="authority-form">
+        <section class="form-section">
+          <h2>Company Information</h2>
+          <div class="form-grid">
+            <label>
+              Name of the company
+              <input type="text" name="companyName" placeholder="Enter company name" required />
+            </label>
+
+            <label>
+              Date of establishment
+              <input type="date" name="establishmentDate" required />
+            </label>
+
+            <label>
+              Name of the applicant
+              <input type="text" name="applicantName" placeholder="Applicant name" required />
+            </label>
+
+            <label class="full-width">
+              Address of applicant
+              <textarea name="applicantAddress" rows="3" placeholder="Applicant address" required></textarea>
+            </label>
+
+            <label>
+              State of headquarters
+              <input type="text" name="headquartersState" placeholder="State" required />
+            </label>
+
+            <label>
+              City of headquarters
+              <input type="text" name="headquartersCity" placeholder="City" required />
+            </label>
+
+            <label>
+              Name of mine
+              <input type="text" name="mineName" placeholder="Mine name" required />
+            </label>
+
+            <label class="full-width">
+              Address of the mining
+              <textarea name="miningAddress" rows="3" placeholder="Mining address" required></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Supervisor Details</h2>
+          <label class="count-label">
+            Number of supervisors
+            <input id="supervisorCount" type="number" min="0" value="1" />
+          </label>
+          <div id="supervisorForms" class="supervisor-forms"></div>
+        </section>
+
+        <section class="form-section">
+          <h2>Electronic Equipments and Machineries</h2>
+          <div id="equipmentForms" class="equipment-forms"></div>
+          <button type="button" id="addEquipmentBtn" class="secondary-btn">Add Machinery</button>
+        </section>
+
+        <section class="form-section issue-section">
+          <h2>Mine Issues</h2>
+          <div class="issue-summary">
+            <p><strong>Total issues reported:</strong> <span id="issueCount">0</span></p>
+            <p><strong>Reported by:</strong> <span id="issueReporter">None</span></p>
+          </div>
+        </section>
+
+        <button type="submit" class="submit-btn">Submit</button>
+      </form>
+
+      <section id="reportSummary" class="summary-card hidden">
+        <h2>Submitted Data Summary</h2>
+        <div id="summaryContent"></div>
+      </section>
+    </main>
+  </body>
+</html>
