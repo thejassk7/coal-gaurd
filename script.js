@@ -259,20 +259,22 @@ document.addEventListener('DOMContentLoaded', () => {
     return wrapper;
   };
 
+  let issueCount = 0;
   const createIssueForm = () => {
+    issueCount += 1;
     const wrapper = document.createElement('div');
     wrapper.className = 'issue-entry';
     wrapper.innerHTML = `
-      <h3>Issue Report</h3>
+      <h3>Issue Report ${issueCount}</h3>
       <div class="issue-row">
         <label>
           Issue description
-          <textarea name="issueDescription" rows="3" placeholder="Describe the issue" required></textarea>
+          <textarea name="issueDescription${issueCount}" rows="3" placeholder="Describe the issue" required></textarea>
         </label>
 
         <label>
           Severity level
-          <select name="issueSeverity">
+          <select name="issueSeverity${issueCount}">
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
@@ -282,32 +284,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <label>
           Date reported
-          <input type="date" name="issueDate" required />
+          <input type="date" name="issueDate${issueCount}" required />
         </label>
 
         <label>
           Affected mine
-          <input type="text" name="issueMine" placeholder="Which mine" required />
+          <input type="text" name="issueMine${issueCount}" placeholder="Which mine" required />
         </label>
       </div>
     `;
     return wrapper;
   };
 
+  let equipmentCount = 0;
   const createEquipmentStatusForm = () => {
+    equipmentCount += 1;
     const wrapper = document.createElement('div');
     wrapper.className = 'equipment-status-entry';
     wrapper.innerHTML = `
-      <h3>Equipment Status</h3>
+      <h3>Equipment Status ${equipmentCount}</h3>
       <div class="equipment-status-row">
         <label>
           Equipment name
-          <input type="text" name="equipmentName" placeholder="Equipment name" required />
+          <input type="text" name="equipmentName${equipmentCount}" placeholder="Equipment name" required />
         </label>
 
         <label>
           Current condition
-          <select name="equipmentCondition">
+          <select name="equipmentCondition${equipmentCount}">
             <option value="Working">Working</option>
             <option value="Needs Repair">Needs Repair</option>
             <option value="Out of Service">Out of Service</option>
@@ -316,12 +320,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <label>
           Last inspection date
-          <input type="date" name="inspectionDate" required />
+          <input type="date" name="inspectionDate${equipmentCount}" required />
         </label>
 
         <label>
           Next maintenance date
-          <input type="date" name="nextMaintenanceDate" required />
+          <input type="date" name="nextMaintenanceDate${equipmentCount}" required />
         </label>
       </div>
     `;
@@ -365,17 +369,17 @@ document.addEventListener('DOMContentLoaded', () => {
         totalWorkers: entry.querySelector(`input[name="mineTotalWorkers${index + 1}"]`)?.value || '0',
         status: entry.querySelector(`select[name="mineStatus${index + 1}"]`)?.value || 'Active',
       })),
-      issues: Array.from(document.querySelectorAll('.issue-entry')).map((entry) => ({
-        description: entry.querySelector('textarea[name="issueDescription"]')?.value.trim() || '',
-        severity: entry.querySelector('select[name="issueSeverity"]')?.value || 'Low',
-        date: entry.querySelector('input[name="issueDate"]')?.value || '',
-        mineName: entry.querySelector('input[name="issueMine"]')?.value.trim() || '',
+      issues: Array.from(document.querySelectorAll('.issue-entry')).map((entry, index) => ({
+        description: entry.querySelector(`textarea[name="issueDescription${index + 1}"]`)?.value.trim() || '',
+        severity: entry.querySelector(`select[name="issueSeverity${index + 1}"]`)?.value || 'Low',
+        date: entry.querySelector(`input[name="issueDate${index + 1}"]`)?.value || '',
+        mineName: entry.querySelector(`input[name="issueMine${index + 1}"]`)?.value.trim() || '',
       })),
-      equipmentStatus: Array.from(document.querySelectorAll('.equipment-status-entry')).map((entry) => ({
-        name: entry.querySelector('input[name="equipmentName"]')?.value.trim() || '',
-        condition: entry.querySelector('select[name="equipmentCondition"]')?.value || 'Working',
-        lastInspection: entry.querySelector('input[name="inspectionDate"]')?.value || '',
-        nextMaintenance: entry.querySelector('input[name="nextMaintenanceDate"]')?.value || '',
+      equipmentStatus: Array.from(document.querySelectorAll('.equipment-status-entry')).map((entry, index) => ({
+        name: entry.querySelector(`input[name="equipmentName${index + 1}"]`)?.value.trim() || '',
+        condition: entry.querySelector(`select[name="equipmentCondition${index + 1}"]`)?.value || 'Working',
+        lastInspection: entry.querySelector(`input[name="inspectionDate${index + 1}"]`)?.value || '',
+        nextMaintenance: entry.querySelector(`input[name="nextMaintenanceDate${index + 1}"]`)?.value || '',
       })),
     };
 
@@ -579,6 +583,68 @@ document.addEventListener('DOMContentLoaded', () => {
     link.download = 'authority-report.json';
     link.click();
     URL.revokeObjectURL(url);
+  });
+
+  const rulesForm = document.getElementById('rules-form');
+  const rulesListContainer = document.getElementById('rulesListContainer');
+  let complianceRules = JSON.parse(localStorage.getItem('complianceRules') || '[]');
+
+  const populateRulesList = () => {
+    rulesListContainer.innerHTML = '';
+
+    if (complianceRules.length === 0) {
+      rulesListContainer.innerHTML = '<p class="no-data">No rules created yet</p>';
+      return;
+    }
+
+    complianceRules.forEach((rule, index) => {
+      const ruleEl = document.createElement('div');
+      const className = `rule-item ${rule.severity.toLowerCase()}`;
+      ruleEl.className = className;
+
+      ruleEl.innerHTML = `
+        <strong>${rule.category}: ${rule.description.substring(0, 50)}...</strong>
+        <small>Severity: ${rule.severity} | Applies to: ${rule.appliesToRole}</small>
+        <p>${rule.description}</p>
+        <div class="rule-meta">
+          <p><strong>Effective Date:</strong> ${rule.effectiveDate}</p>
+          <p><strong>Penalty:</strong> ${rule.penalty}</p>
+        </div>
+        <button type="button" class="rule-delete-btn" data-index="${index}">Delete Rule</button>
+      `;
+
+      ruleEl.querySelector('.rule-delete-btn').addEventListener('click', () => {
+        complianceRules.splice(index, 1);
+        localStorage.setItem('complianceRules', JSON.stringify(complianceRules));
+        populateRulesList();
+      });
+
+      rulesListContainer.appendChild(ruleEl);
+    });
+  };
+
+  populateRulesList();
+
+  rulesForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const newRule = {
+      category: rulesForm.elements.ruleCategory.value,
+      severity: rulesForm.elements.ruleSeverity.value,
+      description: rulesForm.elements.ruleDescription.value.trim(),
+      effectiveDate: rulesForm.elements.effectiveDate.value,
+      appliesToRole: rulesForm.elements.appliesToRole.value,
+      penalty: rulesForm.elements.penalty.value.trim(),
+      createdAt: new Date().toISOString(),
+    };
+
+    complianceRules.push(newRule);
+    localStorage.setItem('complianceRules', JSON.stringify(complianceRules));
+
+    populateRulesList();
+    rulesForm.reset();
+
+    alert(`✓ Rule "${newRule.category}" added successfully!`);
   });
 
   const backBtn = document.getElementById('backBtn');

@@ -50,7 +50,7 @@
 
       <section class="report-section">
         <h3>Add Field Repair or Repair Work</h3>
-        <form id="repair-form" class="repair-form">
+        <form id="repair-form" class="repair-form">   
           <div class="form-grid">
             <label>
               Equipment name
@@ -97,6 +97,76 @@
 
           <button type="submit" class="submit-btn">Add Repair Task</button>
         </form>
+      </section>
+
+      <section class="rules-section">
+        <h3>Rules & Compliance Management</h3>
+        
+        <div class="rules-container">
+          <div class="add-rule-form">
+            <h4>Add or Modify Rule</h4>
+            <form id="rules-form">
+              <div class="form-grid">
+                <label>
+                  Rule category
+                  <select name="ruleCategory" required>
+                    <option value="">Select category</option>
+                    <option value="Safety">Safety</option>
+                    <option value="Environmental">Environmental</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Worker Welfare">Worker Welfare</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Compliance">Compliance</option>
+                  </select>
+                </label>
+
+                <label>
+                  Severity level
+                  <select name="ruleSeverity" required>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                    <option value="Critical">Critical</option>
+                  </select>
+                </label>
+
+                <label class="full-width">
+                  Rule description
+                  <textarea name="ruleDescription" rows="3" placeholder="Enter rule or compliance requirement" required></textarea>
+                </label>
+
+                <label>
+                  Effective date
+                  <input type="date" name="effectiveDate" required />
+                </label>
+
+                <label>
+                  Applies to
+                  <select name="appliesToRole" required>
+                    <option value="">Select role</option>
+                    <option value="Supervisors">Supervisors</option>
+                    <option value="Workers">Workers</option>
+                    <option value="All">All Staff</option>
+                  </select>
+                </label>
+
+                <label>
+                  Penalty for non-compliance
+                  <input type="text" name="penalty" placeholder="e.g., Fine amount, suspension, etc." required />
+                </label>
+              </div>
+
+              <button type="submit" class="submit-btn">Add/Update Rule</button>
+            </form>
+          </div>
+
+          <div class="rules-list-section">
+            <h4>Active Rules & Compliance Requirements</h4>
+            <div id="rulesListContainer" class="rules-list">
+              <p class="no-data">No rules created yet</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="summary-actions">

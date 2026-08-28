@@ -135,6 +135,159 @@ body {
   max-width: 100%;
 }
 
+.rules-section {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+  margin-bottom: 28px;
+  box-shadow: 0 12px 28px rgba(12, 49, 82, 0.08);
+}
+
+.rules-section h3 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: #0a2d5b;
+  font-size: 1.5rem;
+}
+
+.rules-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.add-rule-form {
+  background: #f9fbff;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #dfeaf8;
+}
+
+.add-rule-form h4 {
+  margin: 0 0 16px;
+  color: #0b3d8b;
+  font-size: 1.2rem;
+}
+
+.rules-list-section {
+  background: #f9fbff;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #dfeaf8;
+}
+
+.rules-list-section h4 {
+  margin: 0 0 16px;
+  color: #0b3d8b;
+  font-size: 1.2rem;
+}
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.rule-item {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #63b3ff;
+  box-shadow: 0 2px 8px rgba(12, 49, 82, 0.04);
+}
+
+.rule-item.critical {
+  border-left-color: #ff6b6b;
+}
+
+.rule-item.high {
+  border-left-color: #ffa500;
+}
+
+.rule-item.medium {
+  border-left-color: #1890ff;
+}
+
+.rule-item.low {
+  border-left-color: #52c41a;
+}
+
+.rule-item strong {
+  color: #0a2d5b;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.1rem;
+}
+
+.rule-item small {
+  display: block;
+  color: #5a7a95;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.rule-item p {
+  margin: 6px 0;
+  color: #1d416e;
+  font-size: 0.95rem;
+}
+
+.rule-meta {
+  background: #f5faff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #5a7a95;
+}
+
+.rule-delete-btn {
+  margin-top: 8px;
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef5350;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.rule-delete-btn:hover {
+  background: #ffcdd2;
+}
+
+@media (max-width: 1000px) {
+  .rules-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .form-grid,
+  .dashboard-grid,
+  .rules-container {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-card,
+  .report-section,
+  .rules-section,
+  .dashboard-header {
+    padding: 18px;
+  }
+
+  .rules-list {
+    max-height: 400px;
+  }
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(240px, 1fr));
