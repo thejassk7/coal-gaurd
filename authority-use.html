@@ -99,6 +99,50 @@
         </form>
       </section>
 
+      <section class="dgms-section">
+        <h3>DGMS License & Compliance Verification</h3>
+        
+        <div class="dgms-container">
+          <div class="dgms-upload">
+            <h4>Upload DGMS License</h4>
+            <form id="dgms-form">
+              <div class="form-grid">
+                <label class="full-width">
+                  DGMS License Image
+                  <input type="file" name="dgmsImage" id="dgmsImageInput" accept="image/*" />
+                </label>
+
+                <label>
+                  License expiry date
+                  <input type="date" name="licenseExpiryDate" id="licenseExpiryDate" />
+                </label>
+
+                <label>
+                  License number (if visible)
+                  <input type="text" name="licenseNumber" placeholder="Enter DGMS license number" />
+                </label>
+              </div>
+
+              <button type="submit" class="submit-btn">Upload & Verify</button>
+            </form>
+          </div>
+
+          <div class="dgms-verification">
+            <h4>Compliance Status</h4>
+            <div id="dgmsStatusContainer" class="compliance-status">
+              <p class="no-data">No license uploaded yet</p>
+            </div>
+
+            <div id="dgmsPreviewContainer" class="dgms-preview hidden">
+              <h5>License Preview</h5>
+              <img id="dgmsPreviewImage" src="" alt="DGMS License" />
+              <div id="dgmsComplianceIssues" class="compliance-issues"></div>
+              <button type="button" id="removeDgmsBtn" class="secondary-btn">Remove License</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="rules-section">
         <h3>Rules & Compliance Management</h3>
         

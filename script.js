@@ -585,6 +585,119 @@ document.addEventListener('DOMContentLoaded', () => {
     URL.revokeObjectURL(url);
   });
 
+  const dgmsForm = document.getElementById('dgms-form');
+  const dgmsImageInput = document.getElementById('dgmsImageInput');
+  const licenseExpiryDate = document.getElementById('licenseExpiryDate');
+  const dgmsStatusContainer = document.getElementById('dgmsStatusContainer');
+  const dgmsPreviewContainer = document.getElementById('dgmsPreviewContainer');
+  const dgmsPreviewImage = document.getElementById('dgmsPreviewImage');
+  const dgmsComplianceIssues = document.getElementById('dgmsComplianceIssues');
+  const removeDgmsBtn = document.getElementById('removeDgmsBtn');
+
+  let dgmsData = JSON.parse(localStorage.getItem('dgmsLicenseData') || '{}');
+
+  const displayDgmsStatus = () => {
+    dgmsStatusContainer.innerHTML = '';
+    dgmsPreviewContainer.classList.add('hidden');
+
+    if (!dgmsData.image) {
+      dgmsStatusContainer.innerHTML = '<p class="no-data">No license uploaded yet</p>';
+      return;
+    }
+
+    const issues = [];
+    const today = new Date();
+
+    if (dgmsData.expiryDate) {
+      const expiryDate = new Date(dgmsData.expiryDate);
+      const daysUntilExpiry = (expiryDate - today) / (1000 * 60 * 60 * 24);
+
+      if (daysUntilExpiry < 0) {
+        issues.push({ type: 'error', message: 'License has EXPIRED' });
+      } else if (daysUntilExpiry < 30) {
+        issues.push({ type: 'warning', message: `License expires in ${Math.round(daysUntilExpiry)} days - Renewal required soon` });
+      } else if (daysUntilExpiry < 90) {
+        issues.push({ type: 'warning', message: `License expires in ${Math.round(daysUntilExpiry)} days` });
+      }
+    }
+
+    if (!dgmsData.licenseNumber) {
+      issues.push({ type: 'info', message: 'License number not recorded' });
+    }
+
+    const statusClass = issues.some((i) => i.type === 'error') ? 'error' : issues.some((i) => i.type === 'warning') ? 'warning' : 'compliant';
+    const statusText = statusClass === 'compliant' ? '✓ COMPLIANT' : statusClass === 'warning' ? '⚠ WARNING' : '✗ NON-COMPLIANT';
+
+    dgmsStatusContainer.className = `compliance-status ${statusClass}`;
+    dgmsStatusContainer.innerHTML = `<p><strong>${statusText}</strong></p>
+      <p>License Number: ${dgmsData.licenseNumber || 'Not recorded'}</p>
+      <p>Expiry Date: ${dgmsData.expiryDate || 'Not recorded'}</p>
+      <p>Uploaded: ${dgmsData.uploadedAt ? new Date(dgmsData.uploadedAt).toLocaleDateString() : 'N/A'}`;
+
+    if (issues.length > 0) {
+      dgmsComplianceIssues.innerHTML = '';
+      issues.forEach((issue) => {
+        const issueEl = document.createElement('div');
+        issueEl.className = `compliance-issue-item ${issue.type}`;
+        issueEl.innerHTML = `<strong>${issue.type.toUpperCase()}:</strong> ${issue.message}`;
+        dgmsComplianceIssues.appendChild(issueEl);
+      });
+    }
+
+    dgmsPreviewImage.src = dgmsData.image;
+    dgmsPreviewContainer.classList.remove('hidden');
+  };
+
+  displayDgmsStatus();
+
+  dgmsForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const file = dgmsImageInput.files[0];
+
+    if (!file) {
+      alert('Please select an image file');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size must be less than 5MB');
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      dgmsData = {
+        image: e.target.result,
+        licenseNumber: dgmsForm.elements.licenseNumber.value.trim() || '',
+        expiryDate: dgmsForm.elements.licenseExpiryDate.value || '',
+        uploadedAt: new Date().toISOString(),
+      };
+
+      localStorage.setItem('dgmsLicenseData', JSON.stringify(dgmsData));
+      displayDgmsStatus();
+      dgmsForm.reset();
+
+      alert('✓ DGMS License uploaded and verified successfully!');
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  removeDgmsBtn?.addEventListener('click', () => {
+    if (confirm('Are you sure you want to remove the DGMS license?')) {
+      dgmsData = {};
+      localStorage.removeItem('dgmsLicenseData');
+      displayDgmsStatus();
+    }
+  });
+
   const rulesForm = document.getElementById('rules-form');
   const rulesListContainer = document.getElementById('rulesListContainer');
   let complianceRules = JSON.parse(localStorage.getItem('complianceRules') || '[]');

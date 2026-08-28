@@ -135,6 +135,147 @@ body {
   max-width: 100%;
 }
 
+.dgms-section {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+  margin-bottom: 28px;
+  box-shadow: 0 12px 28px rgba(12, 49, 82, 0.08);
+}
+
+.dgms-section h3 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: #0a2d5b;
+  font-size: 1.5rem;
+}
+
+.dgms-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.dgms-upload {
+  background: #f9fbff;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #dfeaf8;
+}
+
+.dgms-upload h4 {
+  margin: 0 0 16px;
+  color: #0b3d8b;
+  font-size: 1.2rem;
+}
+
+.dgms-verification {
+  background: #f9fbff;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #dfeaf8;
+}
+
+.dgms-verification h4 {
+  margin: 0 0 16px;
+  color: #0b3d8b;
+  font-size: 1.2rem;
+}
+
+.compliance-status {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 10px;
+  border-left: 4px solid #63b3ff;
+  margin-bottom: 16px;
+}
+
+.compliance-status.compliant {
+  border-left-color: #52c41a;
+  background: #f6ffed;
+}
+
+.compliance-status.warning {
+  border-left-color: #ffa500;
+  background: #fffbe6;
+}
+
+.compliance-status.error {
+  border-left-color: #ff6b6b;
+  background: #fff1f0;
+}
+
+.compliance-status p {
+  margin: 4px 0;
+  color: #1d416e;
+}
+
+.dgms-preview {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #dfeaf8;
+}
+
+.dgms-preview.hidden {
+  display: none;
+}
+
+.dgms-preview h5 {
+  margin: 0 0 12px;
+  color: #0a2d5b;
+  font-size: 1rem;
+}
+
+.dgms-preview img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #dfeaf8;
+  margin-bottom: 12px;
+}
+
+.compliance-issues {
+  background: #fef5e7;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.compliance-issue-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #f5dab1;
+}
+
+.compliance-issue-item:last-child {
+  border-bottom: none;
+}
+
+.compliance-issue-item strong {
+  color: #c0392b;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.compliance-issue-item.warning {
+  color: #d68910;
+}
+
+.compliance-issue-item.warning strong {
+  color: #d68910;
+}
+
+.compliance-issue-item.info {
+  background: transparent;
+  color: #1d416e;
+  border-bottom-color: #dfeaf8;
+}
+
+.compliance-issue-item.info strong {
+  color: #0b3d8b;
+}
+
 .rules-section {
   background: #ffffff;
   padding: 28px;
@@ -376,9 +517,18 @@ textarea {
   transform: translateY(-2px);
 }
 
+@media (max-width: 1000px) {
+  .rules-container,
+  .dgms-container {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 760px) {
   .form-grid,
-  .dashboard-grid {
+  .dashboard-grid,
+  .rules-container,
+  .dgms-container {
     grid-template-columns: 1fr;
   }
 
@@ -386,11 +536,10 @@ textarea {
     font-size: 1.5rem;
   }
 
-  .dashboard-card {
-    padding: 18px;
-  }
-
-  .report-section {
+  .dashboard-card,
+  .report-section,
+  .dgms-section,
+  .rules-section {
     padding: 18px;
   }
 }
