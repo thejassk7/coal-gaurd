@@ -152,6 +152,38 @@ document.addEventListener('DOMContentLoaded', () => {
     return differenceInDays > 180;
   };
 
+  // Check for compliance delays
+  const checkComplianceDelays = (equipment) => {
+    const delays = [];
+    const today = new Date();
+
+    equipment.forEach((item) => {
+      // Check missing or expired license
+      if (!item.licenseExpiryDate) {
+        delays.push(`${item.name}: ⚠️ License expiry date is missing`);
+      } else {
+        const expiryDate = new Date(item.licenseExpiryDate);
+        const daysUntilExpiry = (expiryDate - today) / (1000 * 60 * 60 * 24);
+        if (daysUntilExpiry < 0) {
+          delays.push(`${item.name}: 🚨 License has EXPIRED (expired ${Math.abs(Math.round(daysUntilExpiry))} days ago)`);
+        }
+      }
+
+      // Check field visit dates
+      if (!item.lastFieldVisitDate) {
+        delays.push(`${item.name}: ⚠️ Last field visit date is missing`);
+      } else {
+        const visitDate = new Date(item.lastFieldVisitDate);
+        const daysSinceVisit = (today - visitDate) / (1000 * 60 * 60 * 24);
+        if (daysSinceVisit > 90) {
+          delays.push(`${item.name}: 🚨 Field visit overdue (last visit ${Math.round(daysSinceVisit)} days ago - exceeds 90-day limit)`);
+        }
+      }
+    });
+
+    return delays;
+  };
+
   authorityForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -180,6 +212,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const equipment = await Promise.all(equipmentPromises);
+
+    // Check for compliance delays
+    const complianceDelays = checkComplianceDelays(equipment);
+    if (complianceDelays.length > 0) {
+      const delayMessage = `⚠️ COMPLIANCE DELAYS DETECTED ⚠️\n\nYou cannot proceed until the following issues are resolved:\n\n${complianceDelays.join('\n')}\n\nPlease update the machinery information and try again.`;
+      alert(delayMessage);
+      return; // Prevent form submission
+    }
 
     const formData = {
       company: {
