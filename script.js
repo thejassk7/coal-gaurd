@@ -410,14 +410,21 @@ document.addEventListener('DOMContentLoaded', () => {
     supervisorSummaryCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     window.supervisorData = supervisorData;
+    localStorage.setItem('supervisorData', JSON.stringify(supervisorData));
+
+    setTimeout(() => {
+      window.location.href = 'supervisor-use.html';
+    }, 2000);
   });
 
   if (document.body.dataset.page !== 'authority-use') {
-    return;
+    if (document.body.dataset.page !== 'supervisor-use') {
+      return;
+    }
   }
 
   const authorityData = JSON.parse(localStorage.getItem('authorityData') || '{}');
-  const repairTasks = JSON.parse(localStorage.getItem('repairTasks') || '[]');
+  let repairTasks = JSON.parse(localStorage.getItem('repairTasks') || '[]');
 
   document.getElementById('companyNameDisplay').textContent = `Company: ${authorityData.company?.companyName || 'N/A'}`;
   document.getElementById('mineNameDisplay').textContent = `Mine: ${authorityData.company?.mineName || 'N/A'} | Address: ${authorityData.company?.miningAddress || 'N/A'}`;
@@ -576,6 +583,207 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const backBtn = document.getElementById('backBtn');
   backBtn?.addEventListener('click', () => {
+    window.location.href = 'profile.html';
+  });
+
+  if (document.body.dataset.page !== 'supervisor-use') {
+    return;
+  }
+
+  const supervisorData = JSON.parse(localStorage.getItem('supervisorData') || '{}');
+  repairTasks = JSON.parse(localStorage.getItem('repairTasks') || '[]');
+  const supervisorChecklist = JSON.parse(localStorage.getItem('supervisorChecklist') || '{}');
+  const fieldObservations = JSON.parse(localStorage.getItem('fieldObservations') || '[]');
+
+  document.getElementById('supervisorNameDisplay').textContent = `Supervisor: ${supervisorData.personal?.name || 'N/A'}`;
+  document.getElementById('assignedMinesDisplay').textContent = `Email: ${supervisorData.personal?.email || 'N/A'} | Assigned Mines: ${supervisorData.mines?.map((m) => m.name).join(', ') || 'N/A'}`;
+
+  const populateMineDropdown = () => {
+    const mineSelect = document.getElementById('mineNameSelect');
+    supervisorData.mines?.forEach((mine) => {
+      const option = document.createElement('option');
+      option.value = mine.name;
+      option.textContent = mine.name;
+      mineSelect.appendChild(option);
+    });
+  };
+
+  populateMineDropdown();
+
+  const populateIssuesAndRepairs = () => {
+    const issuesContainer = document.getElementById('issuesContainer');
+    const fieldRepairsContainer = document.getElementById('fieldRepairsContainer');
+    const repairWorksContainer = document.getElementById('repairWorksContainer');
+
+    if (supervisorData.issues && supervisorData.issues.length > 0) {
+      issuesContainer.innerHTML = '';
+      supervisorData.issues.forEach((issue) => {
+        const issueEl = document.createElement('div');
+        let className = 'issue-item';
+        if (issue.severity === 'Critical' || issue.severity === 'High') {
+          className += ' warning';
+        } else if (issue.severity === 'Medium') {
+          className += ' info';
+        }
+        issueEl.className = className;
+        issueEl.innerHTML = `
+          <strong>${issue.description}</strong>
+          <small>Mine: ${issue.mineName} | Severity: ${issue.severity}</small>
+          <p>Date: ${issue.date}</p>
+        `;
+        issuesContainer.appendChild(issueEl);
+      });
+    }
+
+    if (supervisorData.equipmentStatus && supervisorData.equipmentStatus.length > 0) {
+      const equipmentContainer = document.getElementById('equipmentStatusContainer');
+      equipmentContainer.innerHTML = '';
+      supervisorData.equipmentStatus.forEach((equipment) => {
+        const eqEl = document.createElement('div');
+        const className = equipment.condition !== 'Working' ? 'issue-item warning' : 'issue-item success';
+        eqEl.className = className;
+        eqEl.innerHTML = `
+          <strong>${equipment.name}</strong>
+          <small>Condition: ${equipment.condition}</small>
+          <p>Last Inspection: ${equipment.lastInspection} | Next Maintenance: ${equipment.nextMaintenance}</p>
+        `;
+        equipmentContainer.appendChild(eqEl);
+      });
+    }
+
+    const fieldRepairs = repairTasks.filter((task) => task.type === 'Field Repair' && task.assignedSupervisor === supervisorData.personal?.name);
+    const repairWorks = repairTasks.filter((task) => task.type === 'Repair Work' && task.assignedSupervisor === supervisorData.personal?.name);
+
+    if (fieldRepairs.length > 0) {
+      fieldRepairsContainer.innerHTML = '';
+      fieldRepairs.forEach((repair) => {
+        const repairEl = document.createElement('div');
+        repairEl.className = 'issue-item info';
+        repairEl.innerHTML = `
+          <strong>${repair.equipment}</strong>
+          <small>${repair.description}</small>
+          <p>Priority: ${repair.priority}</p>
+        `;
+        fieldRepairsContainer.appendChild(repairEl);
+      });
+    }
+
+    if (repairWorks.length > 0) {
+      repairWorksContainer.innerHTML = '';
+      repairWorks.forEach((repair) => {
+        const repairEl = document.createElement('div');
+        repairEl.className = 'issue-item success';
+        repairEl.innerHTML = `
+          <strong>${repair.equipment}</strong>
+          <small>${repair.description}</small>
+          <p>Priority: ${repair.priority} | Due: ${repair.completionDate}</p>
+        `;
+        repairWorksContainer.appendChild(repairEl);
+      });
+    }
+  };
+
+  populateIssuesAndRepairs();
+
+  const complianceCheckboxes = document.querySelectorAll('.compliance-check');
+  const updateChecklistProgress = () => {
+    const totalChecks = complianceCheckboxes.length;
+    const checkedCount = Array.from(complianceCheckboxes).filter((cb) => cb.checked).length;
+    const percentage = totalChecks > 0 ? Math.round((checkedCount / totalChecks) * 100) : 0;
+
+    document.getElementById('checklistProgress').textContent = percentage;
+    const progressFill = document.getElementById('progressFill');
+    progressFill.style.width = `${percentage}%`;
+
+    const pendingWarning = document.getElementById('pendingWarning');
+    if (percentage < 100) {
+      pendingWarning.classList.remove('hidden');
+    } else {
+      pendingWarning.classList.add('hidden');
+    }
+
+    supervisorChecklist.completionPercentage = percentage;
+    supervisorChecklist.checkedItems = Array.from(complianceCheckboxes)
+      .filter((cb) => cb.checked)
+      .map((cb) => cb.name);
+    localStorage.setItem('supervisorChecklist', JSON.stringify(supervisorChecklist));
+  };
+
+  complianceCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', updateChecklistProgress);
+    if (supervisorChecklist.checkedItems?.includes(checkbox.name)) {
+      checkbox.checked = true;
+    }
+  });
+
+  updateChecklistProgress();
+
+  const fieldObservationForm = document.getElementById('field-observation-form');
+  fieldObservationForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const observation = {
+      mineName: fieldObservationForm.elements.mineName.value,
+      type: fieldObservationForm.elements.observationType.value,
+      description: fieldObservationForm.elements.description.value.trim(),
+      severity: fieldObservationForm.elements.severity.value,
+      date: fieldObservationForm.elements.observationDate.value,
+      supervisorName: supervisorData.personal?.name || 'Unknown',
+      submittedAt: new Date().toISOString(),
+    };
+
+    fieldObservations.push(observation);
+    localStorage.setItem('fieldObservations', JSON.stringify(fieldObservations));
+
+    const issuesContainer = document.getElementById('issuesContainer');
+    const noDataMsg = issuesContainer.querySelector('.no-data');
+    if (noDataMsg) {
+      noDataMsg.remove();
+    }
+
+    const obsEl = document.createElement('div');
+    const className = observation.severity === 'Critical' || observation.severity === 'High' ? 'issue-item warning' : 'issue-item info';
+    obsEl.className = className;
+    obsEl.innerHTML = `
+      <strong>${observation.description}</strong>
+      <small>Mine: ${observation.mineName} | Type: ${observation.type}</small>
+      <p>Severity: ${observation.severity} | Date: ${observation.date}</p>
+    `;
+    issuesContainer.appendChild(obsEl);
+
+    fieldObservationForm.reset();
+  });
+
+  const submitChecklistBtn = document.getElementById('submitChecklistBtn');
+  submitChecklistBtn?.addEventListener('click', () => {
+    const percentage = parseInt(document.getElementById('checklistProgress').textContent);
+
+    if (percentage < 100) {
+      const authorityData = JSON.parse(localStorage.getItem('authorityData') || '{}');
+      const notifications = JSON.parse(localStorage.getItem('authorityNotifications') || '[]');
+
+      const notification = {
+        type: 'Pending Checklist',
+        message: `Supervisor ${supervisorData.personal?.name} has pending checklist items (${percentage}% complete)`,
+        supervisorName: supervisorData.personal?.name,
+        checklistPercentage: percentage,
+        timestamp: new Date().toISOString(),
+      };
+
+      notifications.push(notification);
+      localStorage.setItem('authorityNotifications', JSON.stringify(notifications));
+
+      alert(`✓ Checklist submitted (${percentage}% complete). Authorities have been notified of pending items.`);
+    } else {
+      alert('✓ All checklist items completed! Submitted successfully.');
+    }
+
+    supervisorChecklist.lastSubmitted = new Date().toISOString();
+    localStorage.setItem('supervisorChecklist', JSON.stringify(supervisorChecklist));
+  });
+
+  const backButtonId = document.getElementById('backBtn');
+  backButtonId?.addEventListener('click', () => {
     window.location.href = 'profile.html';
   });
 });

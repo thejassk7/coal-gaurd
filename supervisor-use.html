@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supervisor Operations Dashboard</title>
+    <link rel="stylesheet" href="supervisor-use.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body data-page="supervisor-use">
+    <header class="page-header">
+      <h1>Supervisor Operations Dashboard</h1>
+    </header>
+
+    <main class="page-wrapper">
+      <section class="dashboard-header">
+        <h2 id="supervisorNameDisplay"></h2>
+        <p id="assignedMinesDisplay"></p>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="dashboard-card">
+          <h3>Issues Reported</h3>
+          <div id="issuesContainer" class="issues-list">
+            <p class="no-data">No issues reported</p>
+          </div>
+        </section>
+
+        <section class="dashboard-card">
+          <h3>Equipment Status</h3>
+          <div id="equipmentStatusContainer" class="issues-list">
+            <p class="no-data">No equipment reports</p>
+          </div>
+        </section>
+
+        <section class="dashboard-card">
+          <h3>Field Repairs Assignment</h3>
+          <div id="fieldRepairsContainer" class="issues-list">
+            <p class="no-data">No field repairs assigned</p>
+          </div>
+        </section>
+
+        <section class="dashboard-card">
+          <h3>Repair Works Status</h3>
+          <div id="repairWorksContainer" class="issues-list">
+            <p class="no-data">No repair works scheduled</p>
+          </div>
+        </section>
+      </div>
+
+      <section class="checklist-section">
+        <h3>Safety & Compliance Checklist</h3>
+        <div class="checklist-container">
+          <div class="checklist-group">
+            <h4>Pre-Shift Safety Checks</h4>
+            <div class="checklist-items">
+              <label class="checklist-item">
+                <input type="checkbox" name="safetyCheck1" class="compliance-check" />
+                Daily equipment inspection completed
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="safetyCheck2" class="compliance-check" />
+                Safety briefing conducted with workers
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="safetyCheck3" class="compliance-check" />
+                All PPE (Personal Protective Equipment) available
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="safetyCheck4" class="compliance-check" />
+                Emergency exit routes are clear
+              </label>
+            </div>
+          </div>
+
+          <div class="checklist-group">
+            <h4>Environmental Compliance</h4>
+            <div class="checklist-items">
+              <label class="checklist-item">
+                <input type="checkbox" name="envCheck1" class="compliance-check" />
+                Dust suppression systems operational
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="envCheck2" class="compliance-check" />
+                Noise levels within permitted limits
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="envCheck3" class="compliance-check" />
+                Water management system functioning
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="envCheck4" class="compliance-check" />
+                Waste management protocols followed
+              </label>
+            </div>
+          </div>
+
+          <div class="checklist-group">
+            <h4>Maintenance & Documentation</h4>
+            <div class="checklist-items">
+              <label class="checklist-item">
+                <input type="checkbox" name="mainteCheck1" class="compliance-check" />
+                Equipment maintenance log updated
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="mainteCheck2" class="compliance-check" />
+                Worker attendance recorded
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="mainteCheck3" class="compliance-check" />
+                Incident reports filed (if any)
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="mainteCheck4" class="compliance-check" />
+                Safety audit documentation complete
+              </label>
+            </div>
+          </div>
+
+          <div class="checklist-group">
+            <h4>Worker Welfare & Hours</h4>
+            <div class="checklist-items">
+              <label class="checklist-item">
+                <input type="checkbox" name="welfarCheck1" class="compliance-check" />
+                Working hours within regulations
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="welfarCheck2" class="compliance-check" />
+                Rest periods provided as per norms
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="welfarCheck3" class="compliance-check" />
+                Medical facilities accessible
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" name="welfarCheck4" class="compliance-check" />
+                Workers trained on safety protocols
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="checklist-summary">
+          <p><strong>Checklist Progress:</strong> <span id="checklistProgress">0</span>% Complete</p>
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p id="pendingWarning" class="warning-message hidden">⚠️ Pending checklist items will notify authorities</p>
+        </div>
+      </section>
+
+      <section class="report-section">
+        <h3>Report Field Observation</h3>
+        <form id="field-observation-form" class="report-form">
+          <div class="form-grid">
+            <label>
+              Mine name
+              <select name="mineName" id="mineNameSelect" required>
+                <option value="">Select mine</option>
+              </select>
+            </label>
+
+            <label>
+              Observation type
+              <select name="observationType" required>
+                <option value="">Select type</option>
+                <option value="Issue">Issue</option>
+                <option value="Safety Concern">Safety Concern</option>
+                <option value="Maintenance Alert">Maintenance Alert</option>
+                <option value="Compliance Note">Compliance Note</option>
+              </select>
+            </label>
+
+            <label class="full-width">
+              Description
+              <textarea name="description" rows="3" placeholder="Describe your observation" required></textarea>
+            </label>
+
+            <label>
+              Severity
+              <select name="severity" required>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </label>
+
+            <label>
+              Date observed
+              <input type="date" name="observationDate" required />
+            </label>
+          </div>
+
+          <button type="submit" class="submit-btn">Submit Observation</button>
+        </form>
+      </section>
+
+      <section class="summary-actions">
+        <button type="button" class="action-btn" id="submitChecklistBtn">Submit Daily Checklist</button>
+        <button type="button" class="action-btn secondary" id="backBtn">Back to Profile</button>
+      </section>
+    </main>
+  </body>
+</html>
