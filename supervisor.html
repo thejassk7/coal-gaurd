@@ -50,14 +50,20 @@
 
         <section class="form-section">
           <h2>Issues in Mines</h2>
+          <label class="count-label">
+            Number of issues to report
+            <input id="issueCount" type="number" min="0" value="0" />
+          </label>
           <div id="issuesForms" class="issues-forms"></div>
-          <button type="button" id="addIssueBtn" class="secondary-btn">Add Issue</button>
         </section>
 
         <section class="form-section">
           <h2>Equipment Status Report</h2>
+          <label class="count-label">
+            Number of equipment reports
+            <input id="equipmentCount" type="number" min="0" value="0" />
+          </label>
           <div id="equipmentStatusForms" class="equipment-status-forms"></div>
-          <button type="button" id="addEquipmentStatusBtn" class="secondary-btn">Add Equipment Report</button>
         </section>
 
         <button type="submit" class="submit-btn">Submit Report</button>

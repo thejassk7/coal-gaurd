@@ -292,11 +292,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const mineCountInput = document.getElementById('mineCount');
+  const issueCountInput = document.getElementById('issueCount');
+  const equipmentCountInput = document.getElementById('equipmentCount');
   const mineForms = document.getElementById('mineForms');
   const issuesForms = document.getElementById('issuesForms');
   const equipmentStatusForms = document.getElementById('equipmentStatusForms');
-  const addIssueBtn = document.getElementById('addIssueBtn');
-  const addEquipmentStatusBtn = document.getElementById('addEquipmentStatusBtn');
   const supervisorForm = document.getElementById('supervisor-form');
   const supervisorSummaryCard = document.getElementById('reportSummary');
   const supervisorSummaryContent = document.getElementById('summaryContent');
@@ -336,21 +336,20 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let issueCount = 0;
-  const createIssueForm = () => {
-    issueCount += 1;
+  const createIssueForm = (index) => {
     const wrapper = document.createElement('div');
     wrapper.className = 'issue-entry';
     wrapper.innerHTML = `
-      <h3>Issue Report ${issueCount}</h3>
+      <h3>Issue Report ${index}</h3>
       <div class="issue-row">
         <label>
           Issue description
-          <textarea name="issueDescription${issueCount}" rows="3" placeholder="Describe the issue" required></textarea>
+          <textarea name="issueDescription${index}" rows="3" placeholder="Describe the issue" required></textarea>
         </label>
 
         <label>
           Severity level
-          <select name="issueSeverity${issueCount}">
+          <select name="issueSeverity${index}">
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
@@ -360,12 +359,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <label>
           Date reported
-          <input type="date" name="issueDate${issueCount}" required />
+          <input type="date" name="issueDate${index}" required />
         </label>
 
         <label>
           Affected mine
-          <input type="text" name="issueMine${issueCount}" placeholder="Which mine" required />
+          <input type="text" name="issueMine${index}" placeholder="Which mine" required />
         </label>
       </div>
     `;
@@ -373,21 +372,20 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let equipmentCount = 0;
-  const createEquipmentStatusForm = () => {
-    equipmentCount += 1;
+  const createEquipmentStatusForm = (index) => {
     const wrapper = document.createElement('div');
     wrapper.className = 'equipment-status-entry';
     wrapper.innerHTML = `
-      <h3>Equipment Status ${equipmentCount}</h3>
+      <h3>Equipment Status ${index}</h3>
       <div class="equipment-status-row">
         <label>
           Equipment name
-          <input type="text" name="equipmentName${equipmentCount}" placeholder="Equipment name" required />
+          <input type="text" name="equipmentName${index}" placeholder="Equipment name" required />
         </label>
 
         <label>
           Current condition
-          <select name="equipmentCondition${equipmentCount}">
+          <select name="equipmentCondition${index}">
             <option value="Working">Working</option>
             <option value="Needs Repair">Needs Repair</option>
             <option value="Out of Service">Out of Service</option>
@@ -396,12 +394,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <label>
           Last inspection date
-          <input type="date" name="inspectionDate${equipmentCount}" required />
+          <input type="date" name="inspectionDate${index}" required />
         </label>
 
         <label>
           Next maintenance date
-          <input type="date" name="nextMaintenanceDate${equipmentCount}" required />
+          <input type="date" name="nextMaintenanceDate${index}" required />
         </label>
       </div>
     `;
@@ -417,17 +415,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const renderIssuesForms = () => {
+    const count = Number(issueCountInput.value) || 0;
+    issuesForms.innerHTML = '';
+
+    for (let index = 1; index <= count; index += 1) {
+      issuesForms.appendChild(createIssueForm(index));
+    }
+  };
+
+  const renderEquipmentStatusForms = () => {
+    const count = Number(equipmentCountInput.value) || 0;
+    equipmentStatusForms.innerHTML = '';
+
+    for (let index = 1; index <= count; index += 1) {
+      equipmentStatusForms.appendChild(createEquipmentStatusForm(index));
+    }
+  };
+
   mineCountInput.addEventListener('input', renderMineForms);
-  addIssueBtn.addEventListener('click', () => {
-    issuesForms.appendChild(createIssueForm());
-  });
-  addEquipmentStatusBtn.addEventListener('click', () => {
-    equipmentStatusForms.appendChild(createEquipmentStatusForm());
-  });
+  issueCountInput.addEventListener('input', renderIssuesForms);
+  equipmentCountInput.addEventListener('input', renderEquipmentStatusForms);
 
   renderMineForms();
-  issuesForms.appendChild(createIssueForm());
-  equipmentStatusForms.appendChild(createEquipmentStatusForm());
+  renderIssuesForms();
+  renderEquipmentStatusForms();
 
   supervisorForm.addEventListener('submit', (event) => {
     event.preventDefault();
